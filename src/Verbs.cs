@@ -16,20 +16,16 @@ namespace PgnCli
 
             var results = new Glicko2.RatingPeriodResults();
 
-            var currentDay = new DateTime();
+            var currentDay = ParseDateTime(sortedPgn[0]["_tag_roster"]["Date"].ToObject<string>());
 
             foreach (var game in sortedPgn)
             {
-                if (currentDay.Date == new DateTime().Date)
-                {
-                    // Executes during start of loop
-                    currentDay = ParseDateTime(game["_tag_roster"]["Date"].ToObject<string>());
-                }
-                else if (currentDay.Date != ParseDateTime(game["_tag_roster"]["Date"].ToObject<string>()).Date)
+                if (currentDay.Date != ParseDateTime(game["_tag_roster"]["Date"].ToObject<string>()).Date)
                 {
                     // If the current date is different from the previous date, push the latest rating period, and create a new one.
                     calculator.UpdateRatings(results);
                     results = new Glicko2.RatingPeriodResults();
+                    currentDay = ParseDateTime(game["_tag_roster"]["Date"].ToObject<string>());
                 }
 
                 var whiteName = game["_tag_roster"]["White"].ToObject<string>();
