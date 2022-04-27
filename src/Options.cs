@@ -6,6 +6,6 @@ namespace PgnCli
     public class GlickoOptions
     {
         [Value(0, MetaName = "input file", HelpText = "File to be processed.", Required = true)]
-        string File {get; set;}
+        public string File {get; set;}
     }
 }
