@@ -36,9 +36,13 @@ namespace PgnCli
 
                 if (players.ContainsKey(whiteName))
                     white = players[whiteName];
+                else if (game["_others"]["WhiteElo"] != null)
+                    white = new Glicko2.Rating(calculator, game["_others"]["WhiteElo"].ToObject<double>(), calculator.GetDefaultRatingDeviation(), calculator.GetDefaultVolatility());
 
                 if (players.ContainsKey(blackName))
                     black = players[blackName];
+                else if (game["_others"]["BlackElo"] != null)
+                    black = new Glicko2.Rating(calculator, game["_others"]["BlackElo"].ToObject<double>(), calculator.GetDefaultRatingDeviation(), calculator.GetDefaultVolatility());
 
                 if (game["_tag_roster"]["Result"].ToObject<string>() == "1-0")
                 {
