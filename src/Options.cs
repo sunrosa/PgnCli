@@ -16,5 +16,8 @@ namespace PgnCli
 
         [Option('p', "player-name", HelpText = "Player name to search for.")]
         public string PlayerName {get; set;}
+
+        [Option('e', "existing-rating", HelpText = "Uses existing rating numbers contained in pgn files for newly tracked ratings.")]
+        public bool UseExistingRating {get; set;}
     }
 }

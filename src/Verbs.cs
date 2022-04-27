@@ -7,7 +7,7 @@ namespace PgnCli
             return DateTime.ParseExact(date, "yyyy.MM.dd", System.Globalization.CultureInfo.InvariantCulture);
         }
 
-        private static Dictionary<string, Glicko2.Rating> GlickoRate(Newtonsoft.Json.Linq.JArray pgn)
+        private static Dictionary<string, Glicko2.Rating> GlickoRate(Newtonsoft.Json.Linq.JArray pgn, GlickoOptions options)
         {
             var sortedPgn = new Newtonsoft.Json.Linq.JArray(pgn.OrderBy(obj => ParseDateTime(obj["_tag_roster"]["Date"].ToObject<string>()))); // Sort pgn by game date
 
@@ -36,12 +36,12 @@ namespace PgnCli
 
                 if (players.ContainsKey(whiteName))
                     white = players[whiteName];
-                else if (game["_others"]["WhiteElo"] != null)
+                else if (options.UseExistingRating && game["_others"]["WhiteElo"] != null)
                     white = new Glicko2.Rating(calculator, game["_others"]["WhiteElo"].ToObject<double>(), calculator.GetDefaultRatingDeviation(), calculator.GetDefaultVolatility());
 
                 if (players.ContainsKey(blackName))
                     black = players[blackName];
-                else if (game["_others"]["BlackElo"] != null)
+                else if (options.UseExistingRating && game["_others"]["BlackElo"] != null)
                     black = new Glicko2.Rating(calculator, game["_others"]["BlackElo"].ToObject<double>(), calculator.GetDefaultRatingDeviation(), calculator.GetDefaultVolatility());
 
                 if (game["_tag_roster"]["Result"].ToObject<string>() == "1-0")
@@ -70,9 +70,9 @@ namespace PgnCli
         {
             var unsortedPgn = Import.PgnHeadersToJson(System.IO.Path.GetFullPath(options.File)); // Import pgn into JArray from path
 
-            var ratings = GlickoRate(unsortedPgn).ToList().OrderByDescending(obj => obj.Value.GetRating());
+            var ratings = GlickoRate(unsortedPgn, options).ToList().OrderByDescending(obj => obj.Value.GetRating());
 
-            var outStr = "";
+            var outStr = new List<string>();
 
             if (!options.Verbose)
             {
@@ -81,7 +81,7 @@ namespace PgnCli
                     if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
                     if (options.PlayerName != null && rating.Key != options.PlayerName) continue;
 
-                    outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}\n";
+                    outStr.Add($"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}");
                 }
             }
             else
@@ -91,11 +91,11 @@ namespace PgnCli
                     if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
                     if (options.PlayerName != null && rating.Key != options.PlayerName) continue;
 
-                    outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)\n";
+                    outStr.Add($"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)");
                 }
             }
 
-            Console.WriteLine(outStr);
+            Console.WriteLine(string.Join('\n', outStr));
         }
     }
 }
