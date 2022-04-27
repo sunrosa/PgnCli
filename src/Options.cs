@@ -13,5 +13,8 @@ namespace PgnCli
 
         [Option('d', "max-deviation", HelpText = "Max deviation of which to show ratings.")]
         public int MaxDeviation {get; set;}
+
+        [Option('p', "player-name", HelpText = "Player name to search for.")]
+        public string PlayerName {get; set;}
     }
 }

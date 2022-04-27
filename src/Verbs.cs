@@ -79,6 +79,8 @@ namespace PgnCli
                 foreach (var rating in ratings)
                 {
                     if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
+                    if (options.PlayerName != null && rating.Key != options.PlayerName) continue;
+
                     outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}\n";
                 }
             }
@@ -87,6 +89,8 @@ namespace PgnCli
                 foreach (var rating in ratings)
                 {
                     if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
+                    if (options.PlayerName != null && rating.Key != options.PlayerName) continue;
+
                     outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)\n";
                 }
             }
