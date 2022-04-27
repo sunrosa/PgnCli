@@ -4,7 +4,7 @@ namespace PgnCli
     {
         public static void Glicko(GlickoOptions options)
         {
-            Console.WriteLine(Import.PgnToJson($"{Variables.ProgramPath}\\env\\lichess.pgn"));
+            Console.WriteLine(Import.PgnToJson(System.IO.Path.GetFullPath(options.File)));
         }
     }
 }
