@@ -7,5 +7,8 @@ namespace PgnCli
     {
         [Value(0, MetaName = "input file", HelpText = "File to be processed.", Required = true)]
         public string File {get; set;}
+
+        [Option('v', "verbose")]
+        public bool Verbose {get; set;}
     }
 }

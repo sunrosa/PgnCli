@@ -71,9 +71,20 @@ namespace PgnCli
             var ratings = GlickoRate(unsortedPgn).ToList().OrderByDescending(obj => obj.Value.GetRating());
 
             var outStr = "";
-            foreach (var rating in ratings)
+
+            if (!options.Verbose)
             {
-                outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}\n";
+                foreach (var rating in ratings)
+                {
+                    outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}\n";
+                }
+            }
+            else
+            {
+                foreach (var rating in ratings)
+                {
+                    outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)\n";
+                }
             }
 
             Console.WriteLine(outStr);
