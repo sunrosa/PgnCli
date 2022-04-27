@@ -2,11 +2,22 @@ namespace PgnCli
 {
     public static class Verbs
     {
+        /// <summary>
+        /// Create a DateTime object based on the date format written in PGN files.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         private static DateTime ParseDateTime(string date)
         {
             return DateTime.ParseExact(date, "yyyy.MM.dd", System.Globalization.CultureInfo.InvariantCulture);
         }
 
+        /// <summary>
+        /// Create a dictionary of playernames and their full rating objects from a pgn JArray and the Glicko verb's command line options.
+        /// </summary>
+        /// <param name="pgn"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         private static Dictionary<string, Glicko2.Rating> GlickoRate(Newtonsoft.Json.Linq.JArray pgn, GlickoOptions options)
         {
             var sortedPgn = new Newtonsoft.Json.Linq.JArray(pgn.OrderBy(obj => ParseDateTime(obj["_tag_roster"]["Date"].ToObject<string>()))); // Sort pgn by game date
@@ -66,6 +77,10 @@ namespace PgnCli
             return players;
         }
 
+        /// <summary>
+        /// UI interface for Glicko ratings.
+        /// </summary>
+        /// <param name="options"></param>
         public static void Glicko(GlickoOptions options)
         {
             var unsortedPgn = Import.PgnHeadersToJson(System.IO.Path.GetFullPath(options.File)); // Import pgn into JArray from path
