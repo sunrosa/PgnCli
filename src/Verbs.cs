@@ -81,7 +81,7 @@ namespace PgnCli
                     if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
                     if (options.PlayerName != null && rating.Key != options.PlayerName) continue;
 
-                    outStr.Add($"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}");
+                    outStr.Add($"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > Variables.QuestionMarkMinimumDeviation ? "?" : " ")}: {rating.Key}");
                 }
             }
             else
@@ -91,7 +91,7 @@ namespace PgnCli
                     if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
                     if (options.PlayerName != null && rating.Key != options.PlayerName) continue;
 
-                    outStr.Add($"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)");
+                    outStr.Add($"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > Variables.QuestionMarkMinimumDeviation ? "?" : " ")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)");
                 }
             }
 
