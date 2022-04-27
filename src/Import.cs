@@ -23,9 +23,9 @@ namespace PgnCli
             }
         }
 
-        public static JArray PgnToJson(string path)
+        public static JArray PgnHeadersToJson(string path)
         {
-            dynamic json = JArray.Parse(PythonRun($"{Variables.ProgramPath}\\src\\py\\pgntojson.py", new List<string>{path}));
+            dynamic json = JArray.Parse(PythonRun($"{Variables.ProgramPath}\\src\\py\\PgnHeadersToJson.py", new List<string>{path}));
             return json;
         }
     }

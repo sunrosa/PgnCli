@@ -61,12 +61,14 @@ namespace PgnCli
                 players[blackName] = black;
             }
 
+            calculator.UpdateRatings(results);
+
             return players;
         }
 
         public static void Glicko(GlickoOptions options)
         {
-            var unsortedPgn = Import.PgnToJson(System.IO.Path.GetFullPath(options.File)); // Import pgn into JArray from path
+            var unsortedPgn = Import.PgnHeadersToJson(System.IO.Path.GetFullPath(options.File)); // Import pgn into JArray from path
 
             var ratings = GlickoRate(unsortedPgn).ToList().OrderByDescending(obj => obj.Value.GetRating());
 
@@ -76,6 +78,7 @@ namespace PgnCli
             {
                 foreach (var rating in ratings)
                 {
+                    if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
                     outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key}\n";
                 }
             }
@@ -83,6 +86,7 @@ namespace PgnCli
             {
                 foreach (var rating in ratings)
                 {
+                    if (options.MaxDeviation != 0 && rating.Value.GetRatingDeviation() > options.MaxDeviation) continue; // Maximum rating deviation to display a rating
                     outStr += $"{(Math.Round(rating.Value.GetRating(), 2)).ToString("0.00")}{(rating.Value.GetRatingDeviation() > 200 ? "?" : "")}: {rating.Key} ({rating.Value.GetRatingDeviation()} RD, {rating.Value.GetVolatility()} vol)\n";
                 }
             }
